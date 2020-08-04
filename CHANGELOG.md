@@ -16,3 +16,5 @@
 ## 1.1.1v - 03/08/2020
 - master:
 	+ Change to new github repo.
+- develop:
+	+ Create "develop" branch.
