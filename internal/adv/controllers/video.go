@@ -7,7 +7,6 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
-	errorHandler "github.com/thongpham95/adv-tv-backend/internal/adv/utils/errorhandler"
 	"github.com/thongpham95/adv-tv-backend/internal/adv/utils/responsehandler"
 )
 
@@ -17,26 +16,11 @@ type uploadVideoSchema struct {
 }
 
 // UploadVideo uploads video to Spaces
-func (h *BaseHandler) UploadVideo(w http.ResponseWriter, r *http.Request) error {
+func (h *BaseHandler) UploadVideo(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Is here")
 	if r.Method != http.MethodPost {
-		return errorHandler.NewHTTPError(nil, 405, "Method not allowed.")
+		responsehandler.NewHTTPResponse(false, "Method not allowed", nil).ErrorResponse(w, http.StatusBadRequest)
 	}
-	// fmt.Println("Read request body")
-	// body, err := ioutil.ReadAll(r.Body) // Read request body
-	// if err != nil {
-	// 	fmt.Println("Request body read error")
-	// 	return fmt.Errorf("Request body read error : %v", err)
-	// }
-
-	// // Parse body as json
-	// var schema uploadVideoSchema
-	// if err = json.Unmarshal(body, &schema); err != nil {
-	// 	return errorHandler.NewHTTPError(err, 400, "Bad request : invalid JSON")
-	// }
-	// fmt.Println("Parse body as json DONE")
-	// business logic here
-	// r.ParseMultipartForm(10 << 20)
 	r.ParseMultipartForm(200)
 
 	file, handler, err := r.FormFile("video")
@@ -58,10 +42,7 @@ func (h *BaseHandler) UploadVideo(w http.ResponseWriter, r *http.Request) error 
 	}
 	_, putObjectErr := h.spaceClient.PutObject(&object)
 	if putObjectErr != nil {
-		return fmt.Errorf(putObjectErr.Error())
+		fmt.Println(putObjectErr.Error())
 	}
-	fmt.Println("File uploaded")
-	responsehandler.NewHTTPResponse(nil).SuccessResponse(w)
-
-	return nil
+	responsehandler.NewHTTPResponse(true, "File uploaded", nil).SuccessResponse(w)
 }

@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 
-	errorHandler "github.com/thongpham95/adv-tv-backend/internal/adv/utils/errorhandler"
 	advJWT "github.com/thongpham95/adv-tv-backend/internal/adv/utils/jwt"
 	"github.com/thongpham95/adv-tv-backend/internal/adv/utils/responsehandler"
 )
@@ -18,26 +17,26 @@ type loginSchema struct {
 }
 
 // Login exported
-func (h *BaseHandler) Login(w http.ResponseWriter, r *http.Request) error {
+func (h *BaseHandler) Login(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		return errorHandler.NewHTTPError(nil, 405, "Method not allowed.")
+		responsehandler.NewHTTPResponse(false, "Method not allowed", nil).ErrorResponse(w, http.StatusBadRequest)
 	}
 
 	body, err := ioutil.ReadAll(r.Body) // Read request body
 	if err != nil {
-		return fmt.Errorf("Request body read error : %v", err)
+		responsehandler.NewHTTPResponse(false, "Request body read error : "+err.Error(), nil).ErrorResponse(w, http.StatusInternalServerError)
 	}
 
 	// Parse body as json
 	var schema loginSchema
 	if err = json.Unmarshal(body, &schema); err != nil {
-		return errorHandler.NewHTTPError(err, 400, "Bad request : invalid JSON")
+		responsehandler.NewHTTPResponse(false, "Bad request : invalid JSON, "+err.Error(), nil).ErrorResponse(w, http.StatusInternalServerError)
 	}
 
 	fmt.Println("Find account in db...")
 	user, err := h.userRepo.FindByEmail(schema.Email)
 	if err != nil {
-		return errorHandler.NewHTTPError(nil, 404, "No user found")
+		responsehandler.NewHTTPResponse(false, "No user found", nil).ErrorResponse(w, http.StatusNotFound)
 	}
 	fmt.Println("Logging user:", user)
 	fmt.Println("Generating token...")
@@ -48,7 +47,5 @@ func (h *BaseHandler) Login(w http.ResponseWriter, r *http.Request) error {
 	token := advJWT.Token{
 		Token: tokenString,
 	}
-	responsehandler.NewHTTPResponse(token).SuccessResponse(w)
-
-	return nil
+	responsehandler.NewHTTPResponse(true, "Login successfully", token).SuccessResponse(w)
 }

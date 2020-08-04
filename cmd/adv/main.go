@@ -12,24 +12,10 @@ import (
 	postgres "github.com/thongpham95/adv-tv-backend/internal/adv/postgres"
 	"github.com/thongpham95/adv-tv-backend/internal/adv/repositories"
 	spaces "github.com/thongpham95/adv-tv-backend/internal/adv/spaces"
-	"github.com/thongpham95/adv-tv-backend/internal/adv/utils/errorhandler"
 )
 
 // ClientError is an error whose details to be shared with client.
 
-// Use as a wrapper around the handler functions.
-type rootHandler func(http.ResponseWriter, *http.Request) error
-
-func (fn rootHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	err := fn(w, r) // Call handler function
-	if err == nil {
-		return
-	}
-	// This is where our error handling logic starts.
-	log.Printf("An error occured: %v", err) // Log the error.
-
-	errorhandler.HTTPErrorResponse(w, err)
-}
 
 // Done facilitating error handler
 
@@ -37,9 +23,8 @@ func handleRequests(db *sql.DB, spaceClient *s3.S3) {
 	userRepo := repositories.NewUserRepo(db)
 	videoRepo := repositories.NewVideoRepo(db)
 	controllerHandler := controllers.NewBaseHandler(userRepo, videoRepo, spaceClient)
-	// http.Handle("/login", middlewares.IsAuthorized(rootHandler(controllerHandler.Login)))
-	http.Handle("/login", rootHandler(controllerHandler.Login))
-	http.Handle("/video/upload", middlewares.IsAuthorized(rootHandler(controllerHandler.UploadVideo)))
+	http.HandleFunc("/login", controllerHandler.Login)
+	http.Handle("/video/upload", middlewares.IsAuthorized(controllerHandler.UploadVideo))
 }
 
 func main() {
