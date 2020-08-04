@@ -13,3 +13,6 @@
 ## 1.1.0v - 03/08/2020
 - develop:
 	+ Prototype for uploading file to Spaces.
+## 1.1.1v - 03/08/2020
+- master:
+	+ Change to new github repo.
