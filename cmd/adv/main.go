@@ -21,9 +21,13 @@ import (
 func handleRequests(db *sql.DB, spaceClient *s3.S3) {
 	userRepo := repositories.NewUserRepo(db)
 	mediaRepo := repositories.NewMediaItem(db)
-	controllerHandler := controllers.NewBaseHandler(userRepo, mediaRepo, spaceClient)
-	http.HandleFunc("/login", controllerHandler.Login)
-	http.Handle("/video/upload", middlewares.IsAuthorized(controllerHandler.UploadVideo))
+	deviceRepo := repositories.NewDevice(db)
+	controllerHandler := controllers.NewBaseHandler(userRepo, mediaRepo, deviceRepo, spaceClient)
+	http.HandleFunc("/login", controllerHandler.Login)                             // POST
+	http.HandleFunc("/signup", controllerHandler.SignUp)                           // POST
+	http.Handle("/device", middlewares.IsAuthorized(controllerHandler.AddDevice))  // POST
+	http.Handle("/media", middlewares.IsAuthorized(controllerHandler.UploadVideo)) // POST
+	http.Handle("/media", middlewares.IsAuthorized(controllerHandler.GetMediaURL)) // GET
 }
 
 func main() {
