@@ -25,28 +25,27 @@ func GenerateJWT(userID string) (string, error) {
 		errorResult := fmt.Errorf("Something went wrong: %s", err.Error())
 		return "", errorResult
 	}
-	fmt.Println("Token is created")
 	return tokenString, nil
 }
 
 // ValidateToken validate the token string
-func ValidateToken(tokenString string) (bool, error) {
+func ValidateToken(tokenString string) (interface{}, error) {
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("There was an error")
+			return nil, fmt.Errorf("There was an error when validating token")
 		}
 		return []byte(constants.MySecretKey), nil
 	})
 	if err != nil {
-		return false, fmt.Errorf("Token validation error: %v", err)
+		return nil, fmt.Errorf("Token validation error: %v", err)
 	}
 
 	if token.Valid {
 		// for key, val := range claims {
 		// 	fmt.Printf("Key: %v, value: %v\n", key, val)
 		// }
-		return true, nil
+		return claims["user"], nil
 	}
-	return false, fmt.Errorf("Invalid token")
+	return nil, fmt.Errorf("Invalid token")
 }

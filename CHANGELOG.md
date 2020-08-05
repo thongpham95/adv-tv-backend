@@ -16,3 +16,15 @@
 ## 1.1.1v - 03/08/2020
 - master:
 	+ Change to new github repo.
+- develop:
+	+ Create "develop" branch.
+## 1.1.2v - 03/08/2020
+- feat/upload-file:
+	+ Delete error handler, remove it dependencies.
+## 1.2.0v - 05/08/2020
+- feat/upload-file:
+	+ Add return statement after handling errors.
+	+ Add SignUp API.
+	+ Add hashing password into Login + SignUp API.
+	+ Add Add Device API + Get File URL + Upload file to device.
+
