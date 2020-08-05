@@ -21,3 +21,7 @@
 ## 1.1.2v - 03/08/2020
 - feat/upload-file:
 	+ Delete error handler, remove it dependencies.
+## 1.1.3v - 03/08/2020
+- feat/upload-file:
+	+ Add return statement after handling errors.
+

@@ -22,9 +22,9 @@ func NewUserRepo(db *sql.DB) *UserRepo {
 // FindByEmail ..
 func (r *UserRepo) FindByEmail(email string) (*models.User, error) {
 	var user models.User
-	err := r.db.QueryRow("SELECT * FROM adv.user WHERE email = $1", email).Scan(&user.ID, &user.Email, &user.Password)
+	err := r.db.QueryRow("SELECT * FROM users WHERE email = $1", email).Scan(&user.ID, &user.Email, &user.Password)
 	if err != nil {
-		log.Fatal("Failed to execute query: ", err)
+		log.Println("Failed to execute query: ", err)
 		return nil, err
 	}
 	return &user, nil

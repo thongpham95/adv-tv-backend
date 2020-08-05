@@ -16,13 +16,12 @@ import (
 
 // ClientError is an error whose details to be shared with client.
 
-
 // Done facilitating error handler
 
 func handleRequests(db *sql.DB, spaceClient *s3.S3) {
 	userRepo := repositories.NewUserRepo(db)
-	videoRepo := repositories.NewVideoRepo(db)
-	controllerHandler := controllers.NewBaseHandler(userRepo, videoRepo, spaceClient)
+	mediaRepo := repositories.NewMediaItem(db)
+	controllerHandler := controllers.NewBaseHandler(userRepo, mediaRepo, spaceClient)
 	http.HandleFunc("/login", controllerHandler.Login)
 	http.Handle("/video/upload", middlewares.IsAuthorized(controllerHandler.UploadVideo))
 }
