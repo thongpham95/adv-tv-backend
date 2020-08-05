@@ -8,16 +8,16 @@ import (
 )
 
 const (
-	// host is exported
-	host = "localhost"
-	// port is exported
+	// host is unexported
+	host = "188.166.249.111"
+	// port is unexported
 	port = 5432
-	// user is exported
+	// user is unexported
 	user = "quochuy"
-	// password is exported
+	// password is unexported
 	password = "admin123"
-	// dbname is exported
-	dbname = "postgres"
+	// dbname is unexported
+	dbname = "adv_dev"
 )
 
 // ConnectDB opens a connection to the database
