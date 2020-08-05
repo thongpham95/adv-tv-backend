@@ -10,5 +10,5 @@ type User struct {
 // UserRepository exported
 type UserRepository interface {
 	FindByEmail(email string) (*User, error)
-	Save(user *User) error
+	Create(user *User) error
 }
