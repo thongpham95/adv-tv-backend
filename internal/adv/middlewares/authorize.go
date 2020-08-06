@@ -1,10 +1,12 @@
 package middlewares
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 
+	advcontext "github.com/thongpham95/adv-tv-backend/internal/adv/utils/context"
 	advjwt "github.com/thongpham95/adv-tv-backend/internal/adv/utils/jwt"
 	responsehandler "github.com/thongpham95/adv-tv-backend/internal/adv/utils/responsehandler"
 )
@@ -27,8 +29,8 @@ func IsAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 				responsehandler.NewHTTPResponse(false, err.Error(), nil).ErrorResponse(w, http.StatusUnauthorized)
 			}
 			if tokenStr != nil {
-				r.Header.Set("Userid", fmt.Sprintf("%v", tokenStr))
-				endpoint(w, r)
+				ctx := context.WithValue(r.Context(), advcontext.CtxKey("auth-token"), fmt.Sprintf("%v", tokenStr))
+				endpoint(w, r.WithContext(ctx))
 			}
 		}
 	})

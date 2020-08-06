@@ -8,6 +8,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/thongpham95/adv-tv-backend/internal/adv/models"
+	advcontext "github.com/thongpham95/adv-tv-backend/internal/adv/utils/context"
 )
 
 // UserFromReqBody ..
@@ -46,9 +47,12 @@ func (h *BaseHandler) ParseNormalRequestBody(r *http.Request, schema interface{}
 	return nil
 }
 
-// GetUserIDFromHeader return user id from request header
-func (h *BaseHandler) GetUserIDFromHeader(r *http.Request) string {
-	return r.Header["Userid"][0]
+// GetUserIDFromContext return user id from request context
+func (h *BaseHandler) GetUserIDFromContext(r *http.Request) string {
+	if ctxUserID, ok := r.Context().Value(advcontext.CtxKey("auth-token")).(string); ok {
+		return ctxUserID
+	}
+	return ""
 }
 
 // GetContenTypeFromHeader return Content-Type from request header
