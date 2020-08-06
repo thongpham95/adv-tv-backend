@@ -22,9 +22,14 @@
 - feat/upload-file:
 	+ Delete error handler, remove it dependencies.
 ## 1.2.0v - 05/08/2020
-- feat/upload-file:
+- feat/media-api:
 	+ Add return statement after handling errors.
 	+ Add SignUp API.
 	+ Add hashing password into Login + SignUp API.
 	+ Add Add Device API + Get File URL + Upload file to device.
+## 1.2.1v - 06/08/2020
+- feat/media-api:
+	+ Apply context to auth middleware.
+	+ Add context utils for handling context key creation.
+	+ Add check duplicate device when adding new device to user.
 

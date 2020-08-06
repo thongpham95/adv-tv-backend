@@ -30,6 +30,16 @@ func (r *Device) Get(deviceID string) (*models.Device, error) {
 	return &device, nil
 }
 
+// CheckIfUserHasDevice return device info if user already had it
+func (r *Device) CheckIfUserHasDevice(userID string, device *models.Device) (bool, error) {
+	err := r.db.QueryRow("SELECT * FROM device WHERE owner = $1 AND name = $2 AND model = $3 AND serial = $4 AND manufacturer = $5", userID, device.Name, device.Model, device.Serial, device.Manufacturer).Scan(&device.ID, &device.Owner, &device.Name, &device.Model, &device.Serial, &device.Manufacturer, &device.AppVersion, &device.AndroidVersion, &device.LastOpen, &device.LastUpdate)
+	if err != nil {
+		log.Println("Failed to execute query: ", err)
+		return false, err
+	}
+	return true, nil
+}
+
 // Create upload media item to Spaces
 func (r *Device) Create(userID string, device *models.Device) error {
 	tx, err := r.db.Begin()

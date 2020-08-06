@@ -18,4 +18,5 @@ type Device struct {
 type DeviceRepository interface {
 	Get(deviceID string) (*Device, error)
 	Create(userID string, device *Device) error
+	CheckIfUserHasDevice(userID string, device *Device) (bool, error)
 }
