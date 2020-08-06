@@ -32,4 +32,7 @@
 	+ Apply context to auth middleware.
 	+ Add context utils for handling context key creation.
 	+ Add check duplicate device when adding new device to user.
+## 1.2.3v - 06/08/2020
+- develop:
+	+ Add log + enter PHONY to Makefile.
 

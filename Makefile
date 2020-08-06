@@ -18,3 +18,11 @@ clean:
 stop:
 	@docker stop adv-server
 	@docker rm adv-server
+
+.PHONY: enter
+enter:
+	@docker exec -it adv-server bash
+
+.PHONY: log
+log:
+	@docker logs -f adv-server
