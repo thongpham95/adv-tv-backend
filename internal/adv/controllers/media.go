@@ -19,6 +19,31 @@ type uploadVideoSchema struct {
 	MediaFile *multipart.File `json:"media_file"`
 }
 
+// CheckAppVersion check current app version
+func (h *BaseHandler) CheckAppVersion(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		responsehandler.NewHTTPResponse(false, "Method not allowed", nil).ErrorResponse(w, http.StatusBadRequest)
+		return
+	}
+	h.GetUserIDFromContext(r)
+	// get media key
+	appVersion, err := h.mediaRepo.GetCurrentAppVersion()
+	if len(appVersion) < 1 {
+		if err != nil {
+			log.Println(err)
+			responsehandler.NewHTTPResponse(false, "Error when getting app version", nil).ErrorResponse(w, http.StatusInternalServerError)
+			return
+		}
+		responsehandler.NewHTTPResponse(false, "No application version found, please contact admin for more details", nil).ErrorResponse(w, http.StatusNotFound)
+		return
+	}
+	type customResponse struct {
+		CurrentVersion string `json:"current_version"`
+	}
+	customRes := customResponse{CurrentVersion: appVersion}
+	responsehandler.NewHTTPResponse(true, "Get app version successfully", customRes).SuccessResponse(w)
+}
+
 // GetMediaURL return pre-signed URL of a requested file
 func (h *BaseHandler) GetMediaURL(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {

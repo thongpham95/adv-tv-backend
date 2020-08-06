@@ -26,7 +26,7 @@ func (h *BaseHandler) AddDevice(w http.ResponseWriter, r *http.Request) {
 		responsehandler.NewHTTPResponse(false, "Method not allowed", nil).ErrorResponse(w, http.StatusBadRequest)
 		return
 	}
-	userID := h.GetUserIDFromHeader(r)
+	userID := h.GetUserIDFromContext(r)
 	fmt.Println("userID: ", userID)
 	var schema addDeviceSchema
 	if err := h.ParseNormalRequestBody(r, &schema); err != nil {
@@ -34,6 +34,7 @@ func (h *BaseHandler) AddDevice(w http.ResponseWriter, r *http.Request) {
 		responsehandler.NewHTTPResponse(false, "Bad request", nil).ErrorResponse(w, http.StatusBadRequest)
 		return
 	}
+	// Initialize new device
 	now := time.Now() // current local time
 	device := &models.Device{
 		Name:           schema.Name,
@@ -45,6 +46,12 @@ func (h *BaseHandler) AddDevice(w http.ResponseWriter, r *http.Request) {
 		LastOpen:       string(pq.FormatTimestamp(now)),
 		LastUpdate:     string(pq.FormatTimestamp(now)),
 	}
+	// Check if device is already added for current user
+	if isExisted, _ := h.deviceRepo.CheckIfUserHasDevice(userID, device); isExisted {
+		responsehandler.NewHTTPResponse(false, "Device already added", nil).ErrorResponse(w, http.StatusConflict)
+		return
+	}
+	// Check if device is already added for current user*
 	if err := h.deviceRepo.Create(userID, device); err != nil {
 		log.Print(err)
 		responsehandler.NewHTTPResponse(false, "Error adding device to user", nil).ErrorResponse(w, http.StatusInternalServerError)

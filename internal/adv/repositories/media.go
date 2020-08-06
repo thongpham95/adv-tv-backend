@@ -63,3 +63,15 @@ func (r *MediaItem) GetMediaBasedOnKey(key string) (*models.MediaItem, error) {
 	}
 	return &media, nil
 }
+
+// GetCurrentAppVersion (string, error)
+func (r *MediaItem) GetCurrentAppVersion() (string, error) {
+	var appVer models.AppVersion
+	key := "7595a5cc-d732-11ea-bdf8-0242ac120002"
+	err := r.db.QueryRow("SELECT version FROM apk_version WHERE id = $1", key).Scan(&appVer.Version)
+	if err != nil {
+		log.Println("Failed to execute query: ", err)
+		return "", err
+	}
+	return appVer.Version, nil
+}
