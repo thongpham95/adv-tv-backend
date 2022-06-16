@@ -17,8 +17,8 @@ func NewSpaceClient() *s3.S3 {
 	// advSpaceRegion := os.Getenv("ADV_SPACE_REGION")
 
 	// [ Dev enviroment only
-	key := "YERUV3CASNPOG7FQ2QPS"
-	secret := "2xQ+uI7ha94qehWlW+UC7WpghL/lJWnmWHEpHkCA8OU"
+	key := "2TDO5XPJ7DQP6GZ4JD3E"
+	secret := "nAxNFEgocuFOVIvH8SIJE4SY3KaSHC/s6i/UiW4sFnA"
 	advSpaceEndpoint := "https://sgp1.digitaloceanspaces.com"
 	advSpaceRegion := "sgp1"
 	// Dev enviroment only ]
